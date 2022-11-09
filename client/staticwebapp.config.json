@@ -1,0 +1,8 @@
+{
+    "routes": [
+        {
+            "route": "/api/boot*",
+            "redirect": "https://stg-facs-bootservice.azurewebsites.net/"
+        }
+    ]
+}
