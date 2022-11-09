@@ -1,8 +1,8 @@
 {
     "routes": [
         {
-            "route": "/api/boot*",
-            "redirect": "https://stg-facs-bootservice.azurewebsites.net/"
+            "route": "/api/bootService/healthCheck",
+            "redirect": "https://stg-facs-bootservice.azurewebsites.net/api/bootService/healthCheck"
         }
     ]
 }
