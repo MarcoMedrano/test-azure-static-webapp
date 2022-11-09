@@ -1,29 +1,23 @@
-using System;
-using System.IO;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.AspNetCore.Http;
+
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
+using Microsoft.Azure.Functions.Worker;
+using Microsoft.Azure.Functions.Worker.Http;
 
 namespace api
 {
-    public static class WeatherForecast
+    public  class WeatherForecast
     {
         public static readonly Random random = new Random();
         public static readonly string[] summaries = new string[] {
-            "Freezing",
-            "Bracing",
-            "Balmy",
-            "Chilly"
+            "-Freezing",
+            "-Bracing",
+            "-Balmy",
+            "-Chilly"
         };
 
-        [FunctionName("WeatherForecast")]
-        public static async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequest req,
-            ILogger log)
+        [Function("WeatherForecast")]
+        public async Task<HttpResponseData> Run(
+            [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequestData req)
         {
             var forecasts = new object[5];
             var currentDate = DateTime.Today;
@@ -37,7 +31,10 @@ namespace api
                     summary = summaries[random.Next(0, summaries.Length)]
                 };
             }
-            return new OkObjectResult(forecasts);
+
+            var res = req.CreateResponse();
+            await res.WriteAsJsonAsync(forecasts);
+            return res;
         }
     }
 }
