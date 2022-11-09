@@ -14,11 +14,28 @@ namespace api
             "-Balmy",
             "-Chilly"
         };
+        private readonly ILogger<WeatherForecast> log;
+
+        public WeatherForecast(ILogger<WeatherForecast> log)
+        {
+            this.log = log;
+        }
 
         [Function("WeatherForecast")]
         public async Task<HttpResponseData> Run(
             [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequestData req)
         {
+            log.LogInformation("** PROXY: method: {method} uri:{uri}", req.Method, req.Url);
+            var body = req.ReadAsString();
+            log.LogInformation("** PROXY: body: {body}", body);
+
+            if(!string.IsNullOrEmpty(body))
+            {
+                var res2 = req.CreateResponse();
+                res2.WriteString("Echo: "+body);
+                return res2;
+            }
+
             var forecasts = new object[5];
             var currentDate = DateTime.Today;
             for (int i = 0; i < 5; i++)
